@@ -1,15 +1,13 @@
 import { axiosInstance } from "@/lib/axiosInstance";
 import { Product } from "@/modules/products/type";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, Link } from "react-router-dom";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 export async function loader() {
   try {
@@ -32,29 +30,31 @@ export function ProductsRoute() {
       {/* <pre>{JSON.stringify(products, null, 2)}</pre> */}
       <div className="grid grid-cols-3 gap-2">
         {products.map((product) => (
-          <Card key={product.id}>
-            <CardHeader>
-              <div className="overflow-hidden rounded-md">
-                <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="h-auto w-auto object-cover transition-all hover:scale-105"
-                />
-              </div>
-              <CardTitle className="line-clamp-2 text-lg">
-                {product.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="line-clamp-2">{product.description}</p>
-              <CardDescription className="text-lg font-bold">
-                Rp {product.price}
-              </CardDescription>
-            </CardContent>
-            <CardFooter className="justify-center">
+          <Link to={`/products/${product.slug}`} key={product.id}>
+            <Card>
+              <CardHeader>
+                <div className="overflow-hidden rounded-md">
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    className="h-auto w-auto object-cover transition-all hover:scale-105"
+                  />
+                </div>
+                <CardTitle className="line-clamp-2 text-lg">
+                  {product.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="line-clamp-2">{product.description}</p>
+                <CardDescription className="text-lg font-bold">
+                  Rp {product.price}
+                </CardDescription>
+              </CardContent>
+              {/* <CardFooter className="justify-center">
               <Button>Add to cart</Button>
-            </CardFooter>
-          </Card>
+            </CardFooter> */}
+            </Card>
+          </Link>
         ))}
       </div>
     </div>

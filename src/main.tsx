@@ -5,6 +5,7 @@ import { RootRoute } from "./routes/root";
 import "./main.css";
 import { HomeRoute } from "@/routes/home";
 import { ProductsRoute, loader as productsLoader } from "@/routes/products";
+import { ProductRoute } from "@/routes/product";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
         path: "/products",
         element: <ProductsRoute />,
         loader: productsLoader,
+      },
+      {
+        path: "/products/:slug",
+        element: <ProductRoute />,
       },
     ],
   },
