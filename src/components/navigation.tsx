@@ -11,8 +11,8 @@ export function Navigation() {
         <Link to="/products">
           <p>Products</p>
         </Link>
-        <Link to="/sign-in">
-          <Button>Sign In</Button>
+        <Link to="/login">
+          <Button>Login</Button>
         </Link>
       </nav>
     </div>

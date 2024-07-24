@@ -5,12 +5,17 @@ import { RootRoute } from "./routes/root";
 import "./main.css";
 import { HomeRoute } from "@/routes/home";
 import { ProductsRoute, loader as productsLoader } from "@/routes/products";
-import { ProductRoute } from "@/routes/product";
+import { ProductRoute, loader as productLoader } from "@/routes/product";
+import { ErrorPage } from "./routes/error-page";
+import { LoginRoute } from "./routes/login";
+import { RegisterRoute } from "./routes/register";
+import { Toaster } from "@/components/ui/toaster";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootRoute />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -24,6 +29,15 @@ const router = createBrowserRouter([
       {
         path: "/products/:slug",
         element: <ProductRoute />,
+        loader: productLoader,
+      },
+      {
+        path: "/login",
+        element: <LoginRoute />,
+      },
+      {
+        path: "/register",
+        element: <RegisterRoute />,
       },
     ],
   },
@@ -32,5 +46,6 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
+    <Toaster />
   </React.StrictMode>,
 );

@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
   try {
     const response = await axiosInstance.get("/products");
