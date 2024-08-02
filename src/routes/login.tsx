@@ -18,9 +18,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { axiosInstance } from "@/lib/axiosInstance";
+import { cookies } from "@/modules/auth";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -33,6 +35,7 @@ const formSchema = z.object({
 
 export function LoginRoute() {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   function showToast(message: string) {
     toast({
@@ -49,7 +52,28 @@ export function LoginRoute() {
   });
 
   const handleLogin = async (values: z.infer<typeof formSchema>) => {
-    showToast(values.email + " " + values.password);
+    try {
+      const response = await axiosInstance.post(
+        "/auth/login",
+        {
+          email: values.email,
+          password: values.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const userData = await response.data;
+      console.log(userData);
+      const token = userData.token;
+      cookies.set("token", token);
+      showToast("Login successful!");
+      navigate("/");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (

@@ -17,12 +17,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { axiosInstance } from "@/lib/axiosInstance";
 
 const registerFormSchema = z
   .object({
+    username: z.string().min(3, {
+      message: "Username must be at least 3 characters.",
+    }),
     email: z
       .string()
       .email({
@@ -44,9 +48,11 @@ const registerFormSchema = z
   });
 
 export function RegisterRoute() {
+  const navigate = useNavigate();
   const registerForm = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -54,7 +60,26 @@ export function RegisterRoute() {
   });
 
   const register = async (values: z.infer<typeof registerFormSchema>) => {
-    console.log(values);
+    try {
+      const response = await axiosInstance.post(
+        "/auth/register",
+        {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const userData = await response.data;
+      console.log(userData);
+      navigate("/login");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
@@ -72,6 +97,19 @@ export function RegisterRoute() {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
+              <FormField
+                control={registerForm.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="example" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={registerForm.control}
                 name="email"
