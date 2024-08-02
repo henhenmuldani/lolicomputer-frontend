@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/lib/axiosInstance";
 import { Product } from "@/modules/products/type";
-import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { Link, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -44,11 +44,16 @@ export function ProductRoute() {
       <CardContent>
         <p className="line-clamp-2">{product.description}</p>
         <CardDescription className="text-lg font-bold">
-          Rp {product.price}
+          {new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+          }).format(product.price)}
         </CardDescription>
       </CardContent>
       <CardFooter className="justify-end">
-        <Button>Add to cart</Button>
+        <Link to={`/cart`} key={product.id}>
+          <Button>Add to cart</Button>
+        </Link>
       </CardFooter>
     </Card>
   );

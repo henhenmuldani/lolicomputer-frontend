@@ -83,7 +83,10 @@ export function HomeRoute() {
                 <CardContent>
                   <p className="line-clamp-2">{product.description}</p>
                   <CardDescription className="text-lg font-bold">
-                    Rp {product.price}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(product.price)}
                   </CardDescription>
                 </CardContent>
                 {/* <CardFooter className="justify-center">
