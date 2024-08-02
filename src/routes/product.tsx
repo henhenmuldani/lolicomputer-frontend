@@ -9,7 +9,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/lib/axiosInstance";
 import { Product } from "@/modules/products/type";
-import { Link, LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { LoaderFunctionArgs, useLoaderData } from "react-router-dom";
+import { cookies } from "@/modules/auth";
+import { useToast } from "@/components/ui/use-toast";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -26,7 +28,39 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 export function ProductRoute() {
+  const token = cookies.get("token");
   const { product } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { toast } = useToast();
+
+  function showToast(message: string) {
+    toast({
+      title: message,
+    });
+  }
+
+  const handleAddToCart = async () => {
+    try {
+      const response = await axiosInstance.post(
+        "/items",
+        {
+          productId: product.id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const data = await response.data;
+      console.log(data);
+      showToast("Item Added");
+      // navigate("/");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   return (
     <Card className="m-4">
@@ -51,9 +85,7 @@ export function ProductRoute() {
         </CardDescription>
       </CardContent>
       <CardFooter className="justify-end">
-        <Link to={`/cart`} key={product.id}>
-          <Button>Add to cart</Button>
-        </Link>
+        <Button onClick={handleAddToCart}>Add to cart</Button>
       </CardFooter>
     </Card>
   );
